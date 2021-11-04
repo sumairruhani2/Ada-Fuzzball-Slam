@@ -1,14 +1,5 @@
 "use strict"; //incorporating this 'expression' tells the browser to enable 'strict mode' - this mode helps ensure you write better code, for example, it prevents the use of undeclared variables.
 
-//task 1 --------------
-//task 1.1 - download and setup the starter code (this project) from GitHub to a suitable (and remembered) location
-//task 1.2 - open the project (from its location) using a suitable editor (e.g., vscode or replit, etc)
-//task 1.3 - generally review the html and css code/files (for quick reference; should be fairly clear based on work done to date)
-//task 1.4 - review the js code to help ensure you understand what each line is and does (recapped from the earlier group review to help reenforce your own learning and understanding)
-//task 1.5 - reflect on the terms 'abstraction' and 'decomposition' and create a general flow diagram (covered in week 1) to illustrate the codebase use of sequence, conditional (branching), looping (iteration) and function; ideally on paper – awareness of this will be highly useful as you progress through the week
-
-//task 2 -------------- use the ideas of 'abstraction' and 'decomposition' when reflecting on the challenges of the following tasks
-//task 2.1 - open and check the project (in this case the 'index.html' file) using the preferred browser, i.e., Chrome
 //task 2.2 - implement the paint functions and debug any issue/s found; as suggested (in the brief) you will need to enable the developer tools – n.b., there are likely several layers of different problems; useful note: you can ignore any 'AudioContext' warning for the time being as we will discuss this later - however, in interested now please ask :)
 //task 2.3 - expand the paint_assets function so that it draws a rectangle utilising the get_random function to position it dynamically at random positions within the defined canvas; start your research by searching “js random numbers”.  Once you developed and tested your ‘get_random’ function you will likely need to research (or recall) how to draw a rectangle with the p5 library; start your research by searching “p5 draw rectangle” - to complete this task you will likely need to combine your research and test your ideas
 //task 2.4 - update the paint_background function so that the colour format uses 'integer' rgb values rather than 'hex'; start your research by searching "p5 set background color" *note ‘us’ spelling although it shouldn't make too much of a difference research-wise!
@@ -21,17 +12,80 @@ var vp_width = 920,
     vp_height = 690; //defined global variables to hold the defined viewport (vp) details (e.g., size, etc.)
 var engine, world, body; //defined global variables to hold the 'matter' engine components
 
-function apply_velocity() {}
+var crates = []; //create an empty array that will be used to hold all the crates instances
+var ground;
+var leftwall;
+var rightwall;
 
-function apply_angularvelocity() {}
+var specials = [];
 
-function apply_force() {}
+var fuzzball;
+var launcher;
 
-function get_random(min, max) {}
+function apply_velocity() {
+    Matter.Body.setVelocity(fuzzball.body, {
+        x: get_random(0, 20),
+        y: get_random(0, 20) * -1,
+    });
+}
+
+function apply_angularvelocity() {
+    for (let i = 0; i < crates.length; i++) {
+        Matter.Body.setAngularVelocity(
+            crates[i].body,
+            Math.PI / get_random(3, 20)
+        );
+    }
+}
+
+function apply_force() {
+    //apply the same force to all crates
+    for (let i = 0; i < crates.length; i++) {
+        Matter.Body.applyForce(
+            crates[i].body,
+            {
+                x: crates[i].body.position.x,
+                y: crates[i].body.position.y,
+            },
+            {
+                x: 0.05,
+                y: get_random(50, 200) * -1,
+            }
+        );
+    }
+}
+
+function get_random(min, max) {
+    //return a 'fake' random number base on the specified range
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+}
 
 function preload() {
     //a 'p5' defined function runs automatically and used to handle asynchronous loading of external files in a blocking way; once complete
     //the 'setup' function is called (automatically)
+}
+
+function score(points) {
+    let effectspeed = 60;
+    let animatespeed = 500;
+
+    $("#scoreboard").finish();
+    document.getElementById("points").innerHTML = "+" + points;
+    $("#scoreboard").removeAttr("style"); //remove any applied styles
+    $("#scoreboard").fadeIn(effectspeed, function () {
+        $("#scoreboard").animate(
+            {
+                top: "+=50px",
+                opacity: 0,
+            },
+            animatespeed
+        );
+    });
+
+    playerScore += points;
+    document.getElementById("status").innerHTML = "Score: " + playerScore;
 }
 
 function setup() {
@@ -45,7 +99,23 @@ function setup() {
     body = Matter.Body; //the module that contains all 'matter' methods for creating and manipulating 'body' models a 'matter' body
     //is a 'rigid' body that can be simulated by the Matter.Engine; generally defined as rectangles, circles and other polygons)
 
-    frameRate(1); //specifies the number of (refresh) frames displayed every second
+    //enable the 'matter' mouse controller and attach it to the viewport object using P5s elt property
+    let vp_mouse = Matter.Mouse.create(viewport.elt); //the 'elt' is essentially a pointer the the underlying HTML element
+    vp_mouse.pixelRatio = pixelDensity(); //update the pixel ratio with the p5 density value; this supports retina screens, etc
+    let options = {
+        mouse: vp_mouse,
+        collisionFilter: {
+            mask: interactable, //specify the collision catagory (multiples can be OR'd using '|' )
+        },
+    };
+    elastic_constraint = Matter.MouseConstraint.create(engine, options); //see docs on https://brm.io/matter-js/docs/classes/Constraint.html#properties
+    Matter.World.add(world, elastic_constraint); //add the elastic constraint object to the world
+
+    //attach some useful events to the matter engine; https://brm.io/matter-js/docs/classes/Engine.html#events
+    Matter.Events.on(engine, "collisionEnd", collisions);
+
+    frameRate(60);
+    world.gravity.y = 1.0;
 }
 
 function paint_background() {
@@ -55,8 +125,41 @@ function paint_background() {
 
 function paint_assets() {
     //a defined function to 'paint' assets to the canvas
+    for (let i = 0; i < crates.length; i++) {
+        //loop through the crates array and show each
+        crates[i].show();
+    }
+
+    for (let i = 0; i < MAX_SPECIALS; i++) {
+        specials[i].show(); //show the specials
+    }
+
+    fuzzball.show(); //show the fuzzball
+    launcher.show(); //show the launcher indicator
 }
 
 function draw() {
     //a 'p5' defined function that runs automatically and continously (up to your system's hardware/os limit) and based on any specified frame rate
+    //this p5 defined function runs every refresh cycle
+    //special.rotate();
+
+    paint_background(); //paint the default background
+
+    Matter.Engine.update(engine); //run the matter engine update
+    paint_assets(); //paint the assets
+
+    if (elastic_constraint.body !== null) {
+        let pos = elastic_constraint.body.position; //create an shortcut alias to the position (makes a short statement)
+        fill("#ff0000"); //set a fill colour
+        ellipse(pos.x, pos.y, 20, 20); //indicate the body that has been selected
+
+        let mouse = elastic_constraint.mouse.position;
+        stroke("#00ff00");
+        line(pos.x, pos.y, mouse.x, mouse.y);
+    }
+
+    //https://brm.io/matter-js/docs/classes/SAT.html#methods
+    //if(Matter.SAT.collides(fuzzball.body, ground.body).collided == true) {
+    //	console.log("fuzzball to ground");
+    //}
 }

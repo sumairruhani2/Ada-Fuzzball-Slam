@@ -1,42 +1,96 @@
-class Crate {
-  constructor(x, y, w, h) {
-    this.body = Bodies.rectangle(x, y, w, h);
-    World.add(world, this.body);
-    this.w = w;
-    this.h = h;
-  }
+"use strict";
 
-  getBody() {
-    return this.body;
-  }
-  
-  setPosition(in_x, in_y) {
-    const new_pos = Vector.create(in_x, in_y);
-    Body.setPosition(this.body, new_pos);
-  }
-  
-  setVelocity(in_vx, in_vy) {
-    const new_vel = Vector.create(in_vx, in_vy);
-    Body.setVelocity(this.body, new_vel);
-  }
-  
-  setAngle(in_angle) {
-    Body.setAngle(this.body, in_angle);
-  }
-  
-  render() {
-    // get pos from engine
-    const pos = this.body.position;
-    const angle = this.body.angle;
+class c_crate {
+    constructor(x, y, width, height, label) {
+        let options = {
+            restitution: 0.99,
+            friction: 0.03,
+            density: 0.99,
+            frictionAir: 0.032,
+            label: label,
+            collisionFilter: {
+                //used with mouse constraints to allow/not allow iteration
+                category: notinteractable,
+            },
+        };
+        //create the body
+        this.body = Matter.Bodies.rectangle(x, y, width, height, options);
+        Matter.World.add(world, this.body); //add to the matter world
 
-    // render
-    push();
-    translate(pos.x, pos.y);
-    rotate(angle);
-    //fill(255);
-    rectMode(CENTER);
-    rect(0, 0, this.w, this.h);
-    pop();
-  }
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
 
+    body() {
+        return this.body; //return the created body
+    }
+
+    //dont forget bodies are added to the matter world meaning even if not visible the physics engine still manages it
+    remove() {
+        Matter.World.remove(world, this.body);
+    }
+
+    show() {
+        let pos = this.body.position; //create an shortcut alias
+        let angle = this.body.angle;
+
+        push(); //p5 translation
+        stroke("#000000");
+        fill("#ffffff");
+        rectMode(CENTER); //switch centre to be centre rather than left, top
+        translate(pos.x, pos.y);
+        rotate(angle);
+        rect(0, 0, this.width, this.height);
+        pop();
+    }
+}
+("use strict");
+
+class c_crate {
+    constructor(x, y, width, height, label) {
+        let options = {
+            restitution: 0.99,
+            friction: 0.03,
+            density: 0.99,
+            frictionAir: 0.032,
+            label: label,
+            collisionFilter: {
+                //used with mouse constraints to allow/not allow iteration
+                category: notinteractable,
+            },
+        };
+        //create the body
+        this.body = Matter.Bodies.rectangle(x, y, width, height, options);
+        Matter.World.add(world, this.body); //add to the matter world
+
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+
+    body() {
+        return this.body; //return the created body
+    }
+
+    //dont forget bodies are added to the matter world meaning even if not visible the physics engine still manages it
+    remove() {
+        Matter.World.remove(world, this.body);
+    }
+
+    show() {
+        let pos = this.body.position; //create an shortcut alias
+        let angle = this.body.angle;
+
+        push(); //p5 translation
+        stroke("#000000");
+        fill("#ffffff");
+        rectMode(CENTER); //switch centre to be centre rather than left, top
+        translate(pos.x, pos.y);
+        rotate(angle);
+        rect(0, 0, this.width, this.height);
+        pop();
+    }
 }
