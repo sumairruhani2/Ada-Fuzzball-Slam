@@ -6,12 +6,14 @@ body {
 
 .text_default {
 	font-family: 'Anton', sans-serif;
-	font-size: 20vw;
+	font-size: 3vw;
+	color: #FAFAFA;
 }
 
 .text_title {
 	font-family: 'Bungee Shade', cursive;
-	font-size: 40vw;
+	font-size: 4vw;
+	color: #FAFAFA;
 }
 
 .container {
@@ -19,6 +21,32 @@ body {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+}
+
+#status {
+	position: fixed;
+	top: 0%;
+	left: 50%;
+	margin-top: 0px;
+	margin-left: -460px;
+
+	width: 920px;
+	height: 60px;
+	background-color: transparent;
+}
+
+#scoreboard {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin-top: -200px;
+	margin-left: -100px;
+
+	width: 200px;
+	height: 100px;
+	background-color: transparent;
+
+	display: none;
 }
 
 #viewport_container {
