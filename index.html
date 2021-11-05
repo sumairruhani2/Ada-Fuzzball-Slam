@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width">
 
-		<title>Ada Fuzzball Slam v1</title>
+		<title>Ada Fuzzball Slam Game Interaction V1</title>
 
 		<link rel="preconnect" href="https://fonts.gstatic.com">
 		<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bungee+Shade&display=swap" rel="stylesheet">
@@ -12,6 +12,15 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js" integrity="sha512-WIklPM6qPCIp6d3fSSr90j+1unQHUOoWDS4sdTiR8gxUTnyZ8S2Mr8e10sKKJ/bhJgpAa/qG068RDkg6fIlNFA==" crossorigin="anonymous"></script>
 		<script src="https://cdn.jsdelivr.net/npm/p5@0.10.2/lib/addons/p5.sound.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.14.1/matter.min.js" integrity="sha512-zkr6K5aibGz5uIkC28VJQrfg/YDadqtqZPzXiBhUHUSGGqGzmEvK70f+yjV/qCRT21Zsqnc0ABGt5GUakGh16g==" crossorigin="anonymous"></script>
+
+		<!-- https://jquery.com/ is jQuery is a small and fast JavaScript library that provides DOM traversal and manipulation, event handling and basic animation -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+
+		<script src="class_crate.js"></script>
+		<script src="class_fuzzball.js"></script>
+		<script src="class_ground.js"></script>
+		<script src="class_launcher.js"></script>
+		<script src="class_special.js"></script>
 
 		<link rel="stylesheet" href="style.css">
  
@@ -22,11 +31,24 @@
 			<div id="viewport_container">
 				<!-- game viewport goes here-->
 			</div>
+			<div id="scoreboard">
+				<div id="points" class="text_title container">
+					10
+				</div>
+			</div>
 			<div class="controller">
+			</div>
+			<div id="status" class="text_default container">
+				Ada Fuzzball Slam
 			</div>
 		</div>
 
 		<script src="script.js"></script>
 		
+
+		<button onclick="apply_velocity();">Apply Velocity Fuzzball</button>
+		<button onclick="apply_angularvelocity();">Apply Angular Crate</button>
+		<button onclick="apply_force();">Apply Force Crate</button>
+		<button onclick="level1(true)">Restart</button>
 	</body>
 </html>
