@@ -1,12 +1,12 @@
 "use strict";
 
-const VP_WIDTH = 920,
-    VP_HEIGHT = 690; //declare variables to hold the viewport size
+const VP_WIDTH = 1280,
+    VP_HEIGHT = 720; //declare variables to hold the viewport size
 const MAX_CRATES = 18; //declare a variable to hold the max number of crates
-const MAX_SPECIALS = 2;
+const MAX_SPECIALS = 2; //declare a variable to hold the max number of special objects in the game scene
 
-const CRATE_WIDTH = get_random(20, 50),
-    CRATE_HEIGHT = get_random(20, 50);
+const CRATE_WIDTH = get_random(20, 50), //Randomly assigns a crate width
+    CRATE_HEIGHT = get_random(20, 50); // Randomly assigned a crate height
 const FUZZBALL_X = 150,
     FUZZBALL_Y = 590; //declare a starting point for the fuzzball
 const FIZZBALL_D = 30; //declare a diameter for the fuzzball
@@ -24,12 +24,14 @@ var crates = []; //create an empty array that will be used to hold all the crate
 var ground;
 var leftwall;
 var rightwall;
-var roof;
+var roof; //Declares variables to hold their respective objects
 
-var specials = [];
+var specials = []; //Creates an empty array to hold all of the special item instances
 
-var fuzzball;
-var launcher;
+var fuzzball; //Declare a variable to hold the fuzzball object
+var launcher; //Declare a` variable to hold the launcher
+
+var gameBackground;
 
 function apply_velocity() {
     Matter.Body.setVelocity(fuzzball.body, {
@@ -73,6 +75,7 @@ function get_random(min, max) {
 
 function preload() {
     //p5 defined function
+    gameBackground = loadImage("assets/sunset_wp.jpeg");
 }
 
 function score(points) {
@@ -100,6 +103,8 @@ function setup() {
     //this p5 defined function runs automatically once the preload function is done
     viewport = createCanvas(VP_WIDTH, VP_HEIGHT); //set the viewport (canvas) size
     viewport.parent("viewport_container"); //attach the created canvas to the target div
+
+    pixelDensity(2);
 
     //enable the matter engine
     engine = Matter.Engine.create();
@@ -146,16 +151,19 @@ function level1(replay = false) {
     }
 
     //Declaring objects for the game
-    ground = new c_ground(VP_WIDTH / 2, VP_HEIGHT + 20, VP_WIDTH, 40, "ground"); //create a ground object using the ground class
-    leftwall = new c_ground(0, VP_HEIGHT / 2, 1, VP_HEIGHT, "leftwall"); //create a left wall object using the ground class
+    ground = new c_ground(VP_WIDTH / 2, VP_HEIGHT + 20, VP_WIDTH, 40, "ground"); //creates a ground object using the ground class
+
+    leftwall = new c_ground(0, VP_HEIGHT / 2, 1, VP_HEIGHT, "leftwall"); //creates a left wall object using the ground class
+
     rightwall = new c_ground(
         VP_WIDTH,
         VP_HEIGHT / 2,
         1,
         VP_HEIGHT,
         "rightwall"
-    ); //create a right wall object using the ground class
-    roof = new c_ground(VP_WIDTH / 2, -50, VP_WIDTH, 100, "roof"); //create a roof object using the ground class
+    ); //creates a right wall object using the ground class
+
+    roof = new c_ground(VP_WIDTH / 2, -50, VP_WIDTH, 100, "roof"); //creates a roof object using the ground class
 
     fuzzball = new c_fuzzball(FUZZBALL_X, FUZZBALL_Y, FIZZBALL_D, "fuzzball"); //create a fuzzball object
 
@@ -208,7 +216,7 @@ function collisions(event) {
 
 function paint_background() {
     //access the game object for the world, use this as a background image for the game
-    background("#4c738b");
+    background(gameBackground);
 
     ground.show(); //execute the show function for the boundary objects
     leftwall.show();
