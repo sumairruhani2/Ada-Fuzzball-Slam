@@ -3,7 +3,7 @@
 class c_special {
     constructor(x, y, width, height, label) {
         let options = {
-            isStatic: false,
+            isStatic: true,
             restitution: 0.99,
             friction: 0.03,
             density: 0.99,
@@ -39,7 +39,6 @@ class c_special {
     }
 
     show() {
-        this.rotate();
 
         let pos = this.body.position; //create an shortcut alias
         let angle = this.body.angle;

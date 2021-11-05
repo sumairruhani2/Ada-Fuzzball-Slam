@@ -123,7 +123,7 @@ function setup() {
     elastic_constraint = Matter.MouseConstraint.create(engine, options); //see docs on https://brm.io/matter-js/docs/classes/Constraint.html#properties
     Matter.World.add(world, elastic_constraint); //add the elastic constraint object to the world
 
-    level1();
+    level2();
 
     //attach some useful events to the matter engine; https://brm.io/matter-js/docs/classes/Engine.html#events
     Matter.Events.on(engine, "collisionEnd", collisions);
@@ -191,6 +191,47 @@ function level1(replay = false) {
         );
     }
 
+    //create a launcher object using the fuzzball body
+    launcher = new c_launcher(FUZZBALL_X, FUZZBALL_Y - 100, fuzzball.body);
+}
+
+function level2(replay=false) {
+	if (replay == true) {
+        //if this is a 'reply' we need to remove all the objects before recrating them
+        ground.remove();
+        leftwall.remove();
+        rightwall.remove();
+        roof.remove();
+        fuzzball.remove();
+        launcher.remove();
+
+        for (let i = 0; i < MAX_SPECIALS; i++) {
+            specials[i].remove();
+        }
+
+        for (let i = 0; i < MAX_CRATES; i++) {
+            crates[i].remove();
+        }
+    }
+
+    //Declaring objects for the game
+    ground = new c_ground(VP_WIDTH / 2, VP_HEIGHT + 20, VP_WIDTH, 40, "ground"); //create a ground object using the ground class
+    leftwall = new c_ground(0, VP_HEIGHT / 2, 1, VP_HEIGHT, "leftwall"); //create a left wall object using the ground class
+    rightwall = new c_ground(VP_WIDTH, VP_HEIGHT / 2, 1, VP_HEIGHT, "rightwall"); //create a right wall object using the ground class
+    roof = new c_ground(VP_WIDTH / 2, -50, VP_WIDTH, 100, "roof"); //create a roof object using the ground class
+
+    fuzzball = new c_fuzzball(FUZZBALL_X, FUZZBALL_Y, FIZZBALL_D, "fuzzball"); //create a fuzzball object
+
+	for (let i = 0; i < MAX_SPECIALS; i++) {
+        specials[i] = new c_special(
+            get_random(300, 640),
+            get_random(VP_HEIGHT - 600, VP_HEIGHT - 120),
+            70,
+            20,
+            "special"
+        );
+    }
+	
     //create a launcher object using the fuzzball body
     launcher = new c_launcher(FUZZBALL_X, FUZZBALL_Y - 100, fuzzball.body);
 }
