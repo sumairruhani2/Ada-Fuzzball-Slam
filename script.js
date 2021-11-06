@@ -9,7 +9,7 @@ const CRATE_WIDTH = get_random(20, 50), //Randomly assigns a crate width
     CRATE_HEIGHT = get_random(20, 50); // Randomly assigned a crate height
 const FUZZBALL_X = 150,
     FUZZBALL_Y = 590; //declare a starting point for the fuzzball
-const FIZZBALL_D = 30; //declare a diameter for the fuzzball
+const FIZZBALL_D = 40; //declare a diameter for the fuzzball
 
 //declare global variables to hold the framework objects
 var viewport, world, engine, body, elastic_constraint;
@@ -32,6 +32,7 @@ var fuzzball; //Declare a variable to hold the fuzzball object
 var launcher; //Declare a` variable to hold the launcher
 
 var gameBackground;
+var birdImage;
 
 function apply_velocity() {
     Matter.Body.setVelocity(fuzzball.body, {
@@ -76,6 +77,7 @@ function get_random(min, max) {
 function preload() {
     //p5 defined function
     gameBackground = loadImage("assets/sunset_wp.jpeg");
+    birdImage = loadImage("assets/happy_bird.png");
 }
 
 function score(points) {
@@ -104,7 +106,7 @@ function setup() {
     viewport = createCanvas(VP_WIDTH, VP_HEIGHT); //set the viewport (canvas) size
     viewport.parent("viewport_container"); //attach the created canvas to the target div
 
-    pixelDensity(2);
+    pixelDensity();
 
     //enable the matter engine
     engine = Matter.Engine.create();
@@ -153,19 +155,19 @@ function level1(replay = false) {
     //Declaring objects for the game
     ground = new c_ground(VP_WIDTH / 2, VP_HEIGHT + 20, VP_WIDTH, 40, "ground"); //creates a ground object using the ground class
 
-    leftwall = new c_ground(0, VP_HEIGHT / 2, 1, VP_HEIGHT, "leftwall"); //creates a left wall object using the ground class
+    leftwall = new c_ground(0, VP_HEIGHT / 2, 100, VP_HEIGHT, "leftwall"); //creates a left wall object using the ground class
 
     rightwall = new c_ground(
         VP_WIDTH,
         VP_HEIGHT / 2,
-        1,
+        100,
         VP_HEIGHT,
         "rightwall"
     ); //creates a right wall object using the ground class
 
     roof = new c_ground(VP_WIDTH / 2, -50, VP_WIDTH, 100, "roof"); //creates a roof object using the ground class
 
-    fuzzball = new c_fuzzball(FUZZBALL_X, FUZZBALL_Y, FIZZBALL_D, "fuzzball"); //create a fuzzball object
+    fuzzball = new c_fuzzball(FUZZBALL_X, FUZZBALL_Y, FUZZBALL_D, "fuzzball"); //create a fuzzball object
 
     for (let i = 0; i < MAX_SPECIALS; i++) {
         specials[i] = new c_special(
@@ -195,8 +197,8 @@ function level1(replay = false) {
     launcher = new c_launcher(FUZZBALL_X, FUZZBALL_Y - 100, fuzzball.body);
 }
 
-function level2(replay=false) {
-	if (replay == true) {
+function level2(replay = false) {
+    if (replay == true) {
         //if this is a 'reply' we need to remove all the objects before recrating them
         ground.remove();
         leftwall.remove();
@@ -217,12 +219,18 @@ function level2(replay=false) {
     //Declaring objects for the game
     ground = new c_ground(VP_WIDTH / 2, VP_HEIGHT + 20, VP_WIDTH, 40, "ground"); //create a ground object using the ground class
     leftwall = new c_ground(0, VP_HEIGHT / 2, 1, VP_HEIGHT, "leftwall"); //create a left wall object using the ground class
-    rightwall = new c_ground(VP_WIDTH, VP_HEIGHT / 2, 1, VP_HEIGHT, "rightwall"); //create a right wall object using the ground class
+    rightwall = new c_ground(
+        VP_WIDTH,
+        VP_HEIGHT / 2,
+        1,
+        VP_HEIGHT,
+        "rightwall"
+    ); //create a right wall object using the ground class
     roof = new c_ground(VP_WIDTH / 2, -50, VP_WIDTH, 100, "roof"); //create a roof object using the ground class
 
     fuzzball = new c_fuzzball(FUZZBALL_X, FUZZBALL_Y, FIZZBALL_D, "fuzzball"); //create a fuzzball object
 
-	for (let i = 0; i < MAX_SPECIALS; i++) {
+    for (let i = 0; i < MAX_SPECIALS; i++) {
         specials[i] = new c_special(
             get_random(300, 640),
             get_random(VP_HEIGHT - 600, VP_HEIGHT - 120),
@@ -231,7 +239,7 @@ function level2(replay=false) {
             "special"
         );
     }
-	
+
     //create a launcher object using the fuzzball body
     launcher = new c_launcher(FUZZBALL_X, FUZZBALL_Y - 100, fuzzball.body);
 }
@@ -290,7 +298,8 @@ function draw() {
 
     if (elastic_constraint.body !== null) {
         let pos = elastic_constraint.body.position; //create an shortcut alias to the position (makes a short statement)
-        fill("#ff0000"); //set a fill colour
+        //fill("#ff0000"); //set a fill colour
+        noFill();
         ellipse(pos.x, pos.y, 20, 20); //indicate the body that has been selected
 
         let mouse = elastic_constraint.mouse.position;
