@@ -5,14 +5,22 @@ body {
     background-color: rgb(0, 0, 0);
 }
 
+@font-face {
+    /*Angry birds font imported into CSS */
+    font-family: angryFont;
+    src: url(./assets/fonts/angrybirds-regular.ttf);
+    font-weight: bold;
+}
+
 .text_default {
-    font-family: "Anton", sans-serif;
-    font-size: 3vw;
+    font-family: "angryFont";
+    padding-top: 10px;
+    font-size: 4vw;
     color: #fafafa;
 }
 
 .text_title {
-    font-family: "Bungee Shade", cursive;
+    font-family: "angryFont";
     font-size: 4vw;
     color: #fafafa;
 }
@@ -35,7 +43,7 @@ body {
     height: 60px;
     background-color: transparent;
 
-    color: rgb(230, 149, 0);
+    color: rgb(248, 162, 1);
     text-shadow: 1px 1px 7px black;
 }
 

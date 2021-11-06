@@ -39,13 +39,12 @@ class c_special {
     }
 
     show() {
-
         let pos = this.body.position; //create an shortcut alias
         let angle = this.body.angle;
 
         push(); //p5 translation
         stroke("#000000");
-        fill("#ff0000");
+        fill("rgb(248, 162, 1)");
         rectMode(CENTER); //switch centre to be centre rather than left, top
         translate(pos.x, pos.y);
         rotate(angle);
