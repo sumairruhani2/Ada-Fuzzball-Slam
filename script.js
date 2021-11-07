@@ -256,7 +256,8 @@ function mouseReleased() {
 		fuzzball.setNotInteractable();
 		stretchingSound.stop();
         releaseSound.setVolume(0.4);
-        releaseSound.jump(0.08).play();
+        releaseSound.jump(0.08);
+		releaseSound.play();
 	}, 60);
 }
 
