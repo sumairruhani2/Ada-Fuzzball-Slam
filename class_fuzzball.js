@@ -21,6 +21,14 @@ class c_fuzzball {
 		this.diameter = diameter;
 	}
 
+	setNotInteractable(){
+		this.body.collisionFilter.category=1
+	  }
+	
+	setInteractable(){
+		this.body.collisionFilter.category=2
+	}
+
 	body() {
 		return this.body;
 	}
