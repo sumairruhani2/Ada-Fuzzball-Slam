@@ -2,7 +2,7 @@ body {
     padding: 0px 0px 0px 0px;
     margin: 0px 0px 0px 0px;
     /* background-color: #5f083e; */
-    background-color: rgb(0, 0, 0);
+    background-color: #000000;
 }
 
 @font-face {
@@ -71,12 +71,13 @@ body {
 .lives_text {
     position: fixed;
     top: 0%;
-    left: 23%;
+    left: 0%;
     margin-top: 0px;
     margin-left: -460px;
 
     font-size: 1.5vw;
-    color:lightgray;
+    color: rgb(248, 162, 1);
+    text-shadow: 1px 1px 7px black;
 
     width: 1280px;
     height: 60px;
@@ -84,5 +85,6 @@ body {
 }
 
 .controls {
+    font-family: "angryFont";
     color: rgb(248, 162, 1);
 }
