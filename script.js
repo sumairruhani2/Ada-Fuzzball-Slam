@@ -43,6 +43,7 @@ var birdImage;
 var stretchingSound;
 var releaseSound;
 var backgroundMusic;
+var hittingGround;
 
 // P5 DEFINED FUNCTIONS
 
@@ -54,10 +55,11 @@ function preload() {
     birdImage = loadImage("assets/happy_bird.png");
 
     //SOUNDS
-    soundFormats("mp3", "ogg");
+    soundFormats("mp3");
     stretchingSound = loadSound("assets/sounds/stretching-sound-effect.mp3");
     releaseSound = loadSound("assets/sounds/whoosh.mp3");
     backgroundMusic = loadSound("assets/sounds/backgroundMusic.mp3");
+    hittingGround = loadSound("assets/sounds/hittingGround.mp3");
 }
 
 //this p5 defined function runs automatically once the preload function is done
@@ -107,7 +109,7 @@ function draw() {
     if (elastic_constraint.body !== null) {
         let pos = elastic_constraint.body.position; //create an shortcut alias to the position (makes a short statement)
         if (!stretchingSound.isPlaying()) {
-            stretchingSound.setVolume(0.3);
+            stretchingSound.setVolume(1.5);
             stretchingSound.jump(0.5);
             stretchingSound.play();
         }
@@ -187,24 +189,15 @@ function score(points) {
     document.getElementById("status").innerHTML = "Score: " + playerScore;
 }
 
-function level1(replay = false) {
-    if (replay == true) {
-        //if this is a 'reply' we need to remove all the objects before recrating them
-        ground.remove();
-        leftwall.remove();
-        rightwall.remove();
-        roof.remove();
-        fuzzball.remove();
-        launcher.remove();
-        for (let i = 0; i < MAX_SPECIALS; i++) {
-            specials[i].remove();
-        }
+function createFuzzball() {
+    fuzzball = new c_fuzzball(FUZZBALL_X, FUZZBALL_Y, FUZZBALL_D, "fuzzball"); //create a fuzzball object
+}
 
-        for (let i = 0; i < MAX_CRATES; i++) {
-            crates[i].remove();
-        }
-    }
+function createLauncher() {
+    launcher = new c_launcher(FUZZBALL_X, FUZZBALL_Y - 100, fuzzball.body);
+}
 
+function createLayout() {
     //Declaring objects for the game
     ground = new c_ground(VP_WIDTH / 2, VP_HEIGHT + 20, VP_WIDTH, 40, "ground"); //creates a ground object using the ground class
 
@@ -220,37 +213,11 @@ function level1(replay = false) {
 
     roof = new c_ground(VP_WIDTH / 2, -50, VP_WIDTH, 100, "roof"); //creates a roof object using the ground class
 
-    fuzzball = new c_fuzzball(FUZZBALL_X, FUZZBALL_Y, FUZZBALL_D, "fuzzball"); //create a fuzzball object
-
-    for (let i = 0; i < MAX_SPECIALS; i++) {
-        specials[i] = new c_special(
-            get_random(300, 640),
-            get_random(VP_HEIGHT - 600, VP_HEIGHT - 120),
-            70,
-            20,
-            "special"
-        );
-    }
-
-    //loop through each of the crates indexes
-    for (let i = 0; i < MAX_CRATES; i++) {
-        //loop for each instance of a crates
-        let top = -CRATE_HEIGHT * MAX_CRATES - 100;
-        let offset = i * CRATE_HEIGHT * 3;
-        crates[i] = new c_crate(
-            700,
-            top + offset,
-            CRATE_WIDTH,
-            CRATE_HEIGHT,
-            "crate"
-        );
-    }
-
-    //create a launcher object using the fuzzball body
-    launcher = new c_launcher(FUZZBALL_X, FUZZBALL_Y - 100, fuzzball.body);
+    createLauncher();
+    createFuzzball();
 }
 
-function level2(replay = false) {
+function level1(replay = false) {
     if (replay == true) {
         //if this is a 'reply' we need to remove all the objects before recrating them
         ground.remove();
@@ -259,6 +226,8 @@ function level2(replay = false) {
         roof.remove();
         fuzzball.remove();
         launcher.remove();
+
+        //createLayout();
 
         for (let i = 0; i < MAX_SPECIALS; i++) {
             specials[i].remove();
@@ -293,6 +262,81 @@ function level2(replay = false) {
             "special"
         );
     }
+
+    //loop through each of the crates indexes
+    for (let i = 0; i < MAX_CRATES; i++) {
+        //loop for each instance of a crates
+        let top = -CRATE_HEIGHT * MAX_CRATES - 100;
+        let offset = i * CRATE_HEIGHT * 3;
+        crates[i] = new c_crate(
+            700,
+            top + offset,
+            CRATE_WIDTH,
+            CRATE_HEIGHT,
+            "crate"
+        );
+    }
+}
+
+function level2(replay = false) {
+    if (replay == true) {
+        //if this is a 'reply' we need to remove all the objects before recrating them
+        ground.remove();
+        leftwall.remove();
+        rightwall.remove();
+        roof.remove();
+        fuzzball.remove();
+        launcher.remove();
+
+        //createLayout();
+
+        for (let i = 0; i < MAX_SPECIALS; i++) {
+            specials[i].remove();
+        }
+
+        for (let i = 0; i < MAX_CRATES; i++) {
+            crates[i].remove();
+        }
+    }
+
+    //Declaring objects for the game
+    ground = new c_ground(VP_WIDTH / 2, VP_HEIGHT + 20, VP_WIDTH, 40, "ground"); //create a ground object using the ground class
+    leftwall = new c_ground(0, VP_HEIGHT / 2, 1, VP_HEIGHT, "leftwall"); //create a left wall object using the ground class
+    rightwall = new c_ground(
+        VP_WIDTH,
+        VP_HEIGHT / 2,
+        1,
+        VP_HEIGHT,
+        "rightwall"
+    ); //create a right wall object using the ground class
+    roof = new c_ground(VP_WIDTH / 2, -50, VP_WIDTH, 100, "roof"); //create a roof object using the ground class
+    fuzzball = new c_fuzzball(FUZZBALL_X, FUZZBALL_Y, FIZZBALL_D, "fuzzball"); //create a fuzzball object
+    //create a launcher object using the fuzzball body
+    launcher = new c_launcher(FUZZBALL_X, FUZZBALL_Y - 100, fuzzball.body);
+
+    for (let i = 0; i < MAX_SPECIALS; i++) {
+        specials[i] = new c_special(
+            get_random(300, 640),
+            get_random(VP_HEIGHT - 600, VP_HEIGHT - 120),
+            70,
+            20,
+            "special"
+        );
+    }
+
+    //loop through each of the crates indexes
+    for (let i = 0; i < MAX_CRATES; i++) {
+        //loop for each instance of a crates
+        let top = -CRATE_HEIGHT * MAX_CRATES - 100;
+        let offset = i * CRATE_HEIGHT * 3;
+        crates[i] = new c_crate(
+            700,
+            top + offset,
+            CRATE_WIDTH,
+            CRATE_HEIGHT,
+            "crate"
+        );
+    }
 }
 
 function collisions(event) {
@@ -310,7 +354,46 @@ function collisions(event) {
         ) {
             console.log("interesting collision");
             score(100);
+        } else if (
+            (collide.bodyA.label == "fuzzball" &&
+                collide.bodyB.label == "ground") ||
+            (collide.bodyA.label == "ground" &&
+                collide.bodyB.label == "fuzzball")
+        ) {
+            hittingGround.setVolume(0.5);
+            hittingGround.play();
+        } else if (
+            (collide.bodyA.label == "fuzzball" &&
+                collide.bodyB.label == "leftwall") ||
+            (collide.bodyA.label == "leftwall" &&
+                collide.bodyB.label == "fuzzball")
+        ) {
+            hittingGround.setVolume(0.5);
+            hittingGround.play();
+        } else if (
+            (collide.bodyA.label == "fuzzball" &&
+                collide.bodyB.label == "rightwall") ||
+            (collide.bodyA.label == "rightwall" &&
+                collide.bodyB.label == "fuzzball")
+        ) {
+            hittingGround.setVolume(0.5);
+            hittingGround.play();
+        } else if (
+            (collide.bodyA.label == "fuzzball" &&
+                collide.bodyB.label == "roof") ||
+            (collide.bodyA.label == "roof" && collide.bodyB.label == "fuzzball")
+        ) {
+            hittingGround.setVolume(0.5);
+            hittingGround.play();
         }
+
+        /*
+        else {
+            if (!hittingGround.playing) {
+                hittingGround.jump(0.7, 0.1);
+                hittingGround.play();
+            }
+        } */
     });
 }
 
@@ -322,6 +405,11 @@ function paint_background() {
     leftwall.show();
     rightwall.show();
     roof.show();
+
+    if (!backgroundMusic.isPlaying()) {
+        backgroundMusic.setVolume(0.3);
+        backgroundMusic.play();
+    }
 }
 
 function paint_assets() {
@@ -362,6 +450,6 @@ function mouseReleased() {
         launcher.release();
         stretchingSound.stop();
         releaseSound.setVolume(0.4);
-        releaseSound.jump(0.07).play();
+        releaseSound.jump(0.08).play();
     }, 60);
 }

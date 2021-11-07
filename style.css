@@ -16,13 +16,14 @@ body {
     font-family: "angryFont";
     padding-top: 10px;
     font-size: 4vw;
-    color: #fafafa;
+    color: rgb(248, 162, 1);
 }
 
 .text_title {
     font-family: "angryFont";
     font-size: 4vw;
-    color: #fafafa;
+    color: rgb(248, 162, 1);
+    text-shadow: 1px 1px 7px black;
 }
 
 .container {
