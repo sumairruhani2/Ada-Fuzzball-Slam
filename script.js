@@ -60,6 +60,7 @@ function get_random(min, max) {
 
 function preload() {
     //p5 function for loading external files
+
     //IMAGES
     gameBackground = loadImage("assets/sunset_wp.jpeg");
     birdImage = loadImage("assets/happy_bird.png");
@@ -209,6 +210,15 @@ function collisions(event) {
             (collide.bodyA.label == "fuzzball" &&
                 collide.bodyB.label == "ceiling") ||
             (collide.bodyA.label == "ceiling" &&
+                collide.bodyB.label == "fuzzball")
+        ) {
+            hittingGround.setVolume(0.1);
+            hittingGround.jump(0.15);
+            hittingGround.play();
+        } else if (
+            (collide.bodyA.label == "fuzzball" &&
+                collide.bodyB.label == "special") ||
+            (collide.bodyA.label == "special" &&
                 collide.bodyB.label == "fuzzball")
         ) {
             hittingGround.setVolume(0.1);
