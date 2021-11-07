@@ -1,15 +1,7 @@
 body {
     padding: 0px 0px 0px 0px;
     margin: 0px 0px 0px 0px;
-    /* background-color: #5f083e; */
-    background-color: rgb(0, 0, 0);
-}
-
-@font-face {
-    /*Angry birds font imported into CSS */
-    font-family: angryFont;
-    src: url(./assets/fonts/angrybirds-regular.ttf);
-    font-weight: bold;
+    background-color: #cfd8dc;
 }
 
 .text_default {
@@ -65,4 +57,19 @@ body {
     position: relative;
     left: 0px;
     top: 0px;
+}
+
+.lives_text {
+    position: fixed;
+    top: 0%;
+    left: 23%;
+    margin-top: 0px;
+    margin-left: -460px;
+
+    font-size: 1.5vw;
+    color: lightgray;
+
+    width: 920px;
+    height: 60px;
+    background-color: transparent;
 }
