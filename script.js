@@ -1,8 +1,8 @@
 "use strict";
 
 //declare variables to hold viewport size
-var vp_width = 920;
-var vp_height = 690; 
+var vp_width = 1280;
+var vp_height = 720; 
 
 //specials
 var max_specials = get_random(4, 8); 
@@ -35,6 +35,17 @@ var playerScore = 0;
 var livesLeft = 2;
 document.getElementById('lives').innerHTML = "Lives Left: " + livesLeft; //show number of lives on screen
 
+//VARIABLES TO HOLD GAME IMAGES
+var gameBackground;
+var birdImage;
+
+//SOUNDS
+
+var stretchingSound;
+var releaseSound;
+var backgroundMusic;
+var hittingGround;
+
 
 function get_random(min, max) { //return 'fake' random number based on inputted range
 	min = Math.ceil(min);
@@ -44,6 +55,16 @@ function get_random(min, max) { //return 'fake' random number based on inputted 
 
 function preload() {
 	//p5 function for loading external files
+	//IMAGES
+	gameBackground = loadImage("assets/sunset_wp.jpeg");
+	birdImage = loadImage("assets/happy_bird.png");
+
+	//SOUNDS
+	soundFormats("mp3");
+	stretchingSound = loadSound("assets/sounds/stretching-sound-effect.mp3");
+	releaseSound = loadSound("assets/sounds/whoosh.mp3");
+	backgroundMusic = loadSound("assets/sounds/backgroundMusic.mp3");
+	hittingGround = loadSound("assets/sounds/hittingGround.mp3");
 }
 
 function setup() {
@@ -51,6 +72,8 @@ function setup() {
 	
 	viewport = createCanvas(vp_width, vp_height); //set viewport (canvas) size
 	viewport.parent("viewport_container"); //attach created canvas to target div
+
+	pixelDensity();
 
 	//enable matter engine
 	engine = Matter.Engine.create();
@@ -68,7 +91,7 @@ function setup() {
 	elastic_constraint = Matter.MouseConstraint.create(engine, options); //create mouse constraints
 	Matter.World.add(world, elastic_constraint); //add elastic constraint object to world
 	Matter.Events.on(engine, 'collisionEnd', collisions); //attach events to matter engine
-
+	
 	level1();
 
 	frameRate(60);
@@ -84,23 +107,33 @@ function draw() {
 
 	if (elastic_constraint.body !== null) {
 		let pos = elastic_constraint.body.position; //create position alias	
-		fill("#ff0000"); //set fill colour
+		if (!stretchingSound.isPlaying()) {
+            stretchingSound.setVolume(1.5);
+            stretchingSound.jump(0.5);
+            stretchingSound.play();
+        }
+		noFill();
 		ellipse(pos.x, pos.y, 20, 20); //indicate body selected
 
 		let mouse = elastic_constraint.mouse.position;
-		stroke("#00ff00");
+		stroke("rgb(230, 149, 0)");
 		line(pos.x, pos.y, mouse.x, mouse.y);
 	}
 }
 
 function paint_background() {
 	//add background to viewport
-	background('#4c738b'); 
+	background(gameBackground);
 
 	//execute show function for boundary objects
 	ground.show(); 
 	leftwall.show();
 	rightwall.show();
+
+	if (!backgroundMusic.isPlaying()) {
+        backgroundMusic.setVolume(0.1);
+        backgroundMusic.play();
+    }
 }
 
 function paint_assets() {
@@ -124,15 +157,50 @@ function paint_assets() {
 }
 
 function collisions(event) {
-	event.pairs.forEach((collide) => { //event.pairs[0].bodyA.label
-		console.log(collide.bodyA.label + " - " + collide.bodyB.label);
+	event.pairs.forEach((collide) => {
+        //event.pairs[0].bodyA.label
+        console.log(collide.bodyA.label + " - " + collide.bodyB.label);
 
-		if( 
-			(collide.bodyA.label == "fuzzball" && collide.bodyB.label == "crate") ||
-			(collide.bodyA.label == "crate" && collide.bodyB.label == "fuzzball")
-		) {
-			score(100);
-		}
+        if (
+            (collide.bodyA.label == "fuzzball" &&
+                collide.bodyB.label == "crate") ||
+            (collide.bodyA.label == "crate" &&
+                collide.bodyB.label == "fuzzball")
+        ) {
+            console.log("interesting collision");
+            score(100);
+        } else if (
+            (collide.bodyA.label == "fuzzball" &&
+                collide.bodyB.label == "ground") ||
+            (collide.bodyA.label == "ground" &&
+                collide.bodyB.label == "fuzzball")
+        ) {
+            hittingGround.setVolume(0.5);
+            hittingGround.play();
+        } else if (
+            (collide.bodyA.label == "fuzzball" &&
+                collide.bodyB.label == "leftwall") ||
+            (collide.bodyA.label == "leftwall" &&
+                collide.bodyB.label == "fuzzball")
+        ) {
+            hittingGround.setVolume(0.5);
+            hittingGround.play();
+        } else if (
+            (collide.bodyA.label == "fuzzball" &&
+                collide.bodyB.label == "rightwall") ||
+            (collide.bodyA.label == "rightwall" &&
+                collide.bodyB.label == "fuzzball")
+        ) {
+            hittingGround.setVolume(0.5);
+            hittingGround.play();
+        } else if (
+            (collide.bodyA.label == "fuzzball" &&
+                collide.bodyB.label == "roof") ||
+            (collide.bodyA.label == "roof" && collide.bodyB.label == "fuzzball")
+        ) {
+            hittingGround.setVolume(0.5);
+            hittingGround.play();
+        }
 	});
 }
 
@@ -186,6 +254,9 @@ function mouseReleased() {
 	setTimeout(() => {
 		launcher.release();
 		fuzzball.setNotInteractable();
+		stretchingSound.stop();
+        releaseSound.setVolume(0.4);
+        releaseSound.jump(0.08).play();
 	}, 60);
 }
 
@@ -244,6 +315,8 @@ function createObjects() {
 	leftwall = new c_ground(0, vp_height/2, 20, vp_height, "leftwall"); //create left wall object 
 	rightwall = new c_ground(vp_width, vp_height/2, 20, vp_height, "rightwall"); //create right wall object
 	fuzzball = new c_fuzzball(fuzzball_x, fuzzball_y, fuzzball_d, "fuzzball"); //create fuzzball object
+	//create a launcher object using the fuzzball body
+	launcher = new c_launcher(fuzzball_x, fuzzball_y-100, fuzzball.body);
 }
 
 function level1() {
@@ -257,7 +330,4 @@ function level1() {
 		specials[i] = new c_special(random1, random2, 70, 20, "special");
 		crates[i] = new c_crate(random1, random2 -50, crate_width, crate_height, "crate");
 	}
-
-	//create a launcher object using the fuzzball body
-	launcher = new c_launcher(fuzzball_x, fuzzball_y-100, fuzzball.body);
 }

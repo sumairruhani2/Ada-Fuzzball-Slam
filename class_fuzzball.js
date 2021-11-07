@@ -38,16 +38,16 @@ class c_fuzzball {
 		Matter.World.remove(world, this.body);
 	}
 
-	show() {
-		let pos = this.body.position;
-		let angle = this.body.angle;
-
-		push(); //p5 translation 
+    show() {
+        let pos = this.body.position;
+        let angle = this.body.angle;
+        push(); //p5 translation
 			translate(pos.x, pos.y);
 			rotate(angle);
-			fill('#00aa00');
-			ellipseMode(CENTER); //switch centre to be centre rather than left, top
+			imageMode(CENTER); //switch centre to be centre rather than left, top
 			circle(0, 0, this.diameter);
-		pop();
-	}
+			birdImage.resize(50, 0);
+			image(birdImage, 0, 0, this.width, this.height);
+        pop();
+    }
 }

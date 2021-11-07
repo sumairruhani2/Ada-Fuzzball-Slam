@@ -45,7 +45,7 @@ class c_special {
 
         push(); //p5 translation
         stroke("#000000");
-        fill("#ff0000");
+        fill("rgb(248, 162, 1)");
         rectMode(CENTER); //switch centre to be centre rather than left, top
         translate(pos.x, pos.y);
         rotate(angle);

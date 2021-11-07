@@ -38,7 +38,7 @@ class c_launcher {
 		if(this.launch.bodyB) {
 			let posA = this.launch.pointA; //create an shortcut alias 
 			let posB = this.launch.bodyB.position;
-			stroke("#00ff00"); //set a colour
+			stroke("rgb(230, 149, 0)"); //set a colour
 			line(posA.x, posA.y, posB.x, posB.y); //draw a line between the two points
 		}
 	}
