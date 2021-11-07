@@ -255,7 +255,7 @@ function level1() {
 		var random2 = get_random(vp_height-600, vp_height-120);
 
 		specials[i] = new c_special(random1, random2, 70, 20, "special");
-		crates[i] = new c_crate(random1, random2 - 100, crate_width, crate_height, "crate");
+		crates[i] = new c_crate(random1, random2 -50, crate_width, crate_height, "crate");
 	}
 
 	//create a launcher object using the fuzzball body
