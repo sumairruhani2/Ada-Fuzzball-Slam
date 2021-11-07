@@ -298,10 +298,9 @@ function endGame() {
     stroke(0);
     strokeWeight(0.3);
 
-    /*
     textSize(65) && textAlign(CENTER);
     text("Your Score: " + playerScore, vp_width / 2, vp_height / 3);
-    textFont("Courier New"); */
+    textFont("Courier New");
 
     textSize(20) && textStyle(NORMAL);
     text("Press enter to return to main menu", vp_width / 2, vp_height / 2);
